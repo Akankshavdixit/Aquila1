@@ -25,21 +25,17 @@ app.get("/index", (req, res) =>{
 
 });
 
-app.get("/", (req,res) => {
-    
-    db.query("SELECT task FROM tasks", (err, result) => {
-        if(err)
-        {
+app.get("/", (req, res) => {
+    db.query("SELECT task_id, task FROM tasks", (err, result) => { 
+        if (err) {
             console.log("Error fetching data", err);
+            res.status(500).send("Error fetching tasks");
+        } else {
+            const data = result.rows;
+            res.render("mainpage.ejs", { data });
         }
-        const data = result.rows;
-
-        res.render("mainpage.ejs", {data});
-    })
-
-})
-
-
+    });
+});
 
 
 app.post("/addtask", (req,res) => {
@@ -49,6 +45,26 @@ app.post("/addtask", (req,res) => {
     res.redirect("/");
 
 })
+
+app.post("/delete/:task_id", (req, res) => {
+    const taskId = req.params.task_id;
+
+    db.query("DELETE FROM tasks WHERE task_id = $1", [taskId], (err, result) => {
+        if (err) {
+            console.log("Error deleting task", err);
+            res.status(500).send("Error deleting task");
+        } else {
+            res.redirect("/");
+        }
+    });
+});
+
+
+
+
+
+
+
 
 
     

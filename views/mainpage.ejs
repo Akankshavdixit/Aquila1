@@ -10,14 +10,19 @@
     <div class="ml-80">
         <div><a href="/index"><button class="text-white text-lg mt-8 ml-16 bg-[#96B6C5] hover:bg-[#8bc0d8] text-center px-5 py-2 w-[750px] h-[44px]">Add task</button></a></div>
         <div class="ml-16 mr-16 mt-8 w-[750px] border border-black p-4 ">
+            
             <ul>
                 <% data.forEach(item => { %>
-                    
-                    <li><p class="mb-6 text-justify "><%= item.task %></p></li>
-                    <hr>
-
+                    <li>
+                        <p class="mb-6 text-justify"><%= item.task %></p>
+                        <form action="/delete/<%= item.task_id %>" method="POST">
+                            <button type="submit" class="text-white bg-red-500 hover:bg-red-700 text-center px-4 py-2 mt-2">Delete</button>
+                        </form>
+                        <hr>
+                    </li>
                 <% }); %>
             </ul>
+            
         </div>
     </div>
 </body>
