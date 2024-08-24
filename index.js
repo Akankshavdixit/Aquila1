@@ -26,7 +26,7 @@ app.get("/index", (req, res) =>{
 });
 
 app.get("/", (req, res) => {
-    db.query("SELECT task_id, task FROM tasks", (err, result) => { 
+    db.query("SELECT task_id, task, status, created_at FROM tasks", (err, result) => {
         if (err) {
             console.log("Error fetching data", err);
             res.status(500).send("Error fetching tasks");
@@ -58,6 +58,34 @@ app.post("/delete/:task_id", (req, res) => {
         }
     });
 });
+
+app.post("/complete/:task_id", (req, res) => {
+    const taskId = req.params.task_id;
+
+    db.query("UPDATE tasks SET status = 'completed' WHERE task_id = $1", [taskId], (err, result) => {
+        if (err) {
+            console.log("Error updating task", err);
+            res.status(500).send("Error updating task");
+        } else {
+            res.redirect("/");
+        }
+    });
+});
+
+
+function deleteOldTasks() {
+    db.query("DELETE FROM tasks WHERE created_at < NOW() - INTERVAL '24 hours'", (err, result) => {
+        if (err) {
+            console.log("Error deleting old tasks", err);
+        } else {
+            console.log("Old tasks deleted successfully");
+        }
+    });
+}
+
+
+setInterval(deleteOldTasks, 60 * 60 * 1000);
+
 
 
 
